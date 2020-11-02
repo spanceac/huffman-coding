@@ -109,7 +109,19 @@ void tree_leaf_add(struct tree_node *head, unsigned short code, int code_len, un
 int main(int argc, char *argv[])
 {
 	FILE *f_tree, *f_encoded, *f_decoded;
+
+	if(argc < 3)
+	{
+		printf("Pass the Huffman tree file as first parameter and the\
+ encoded file as the second\n");
+		return -1;
+	}
 	f_tree = fopen(argv[1], "r");
+	if(f_tree == NULL)
+	{
+		printf("Error opening file %s\n", argv[1]);
+		return -1;
+	}
 
 	struct tree_node *head = malloc(sizeof(struct tree_node));
 	head->left = NULL;
@@ -136,6 +148,11 @@ int main(int argc, char *argv[])
 	tree_traversal(head);
 
 	f_encoded = fopen(argv[2], "r");
+	if(f_encoded == NULL)
+	{
+		printf("Error opening file %s\n", argv[2]);
+		return -1;
+	}
 	f_decoded = fopen("decoded.out", "w");
 	int c = 0;
 

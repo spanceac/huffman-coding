@@ -121,7 +121,18 @@ int main(int argc, char *argv[])
 {
 	FILE *f;
 
+	if(argc < 2)
+	{
+		printf("Give the file to encode as parameter\n");
+		return -1;
+	}
+
 	f = fopen(argv[1], "r");
+	if(f == NULL)
+	{
+		printf("Error opening file %s\n", argv[1]);
+		return -1;
+	}
 	struct code my_code[256] = {0};
 
 	int eval_count = 0;
