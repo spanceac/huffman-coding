@@ -132,6 +132,7 @@ int main(int argc, char *argv[])
 		int len = fgetc(f_tree);
 		unsigned short code = 0;
 		unsigned char byte1 = 0, byte2 = 0;
+		if(len == 0) continue;
 		byte1 = fgetc(f_tree);
 		code = byte1 << 8;
 		if(len > 8)
@@ -155,13 +156,28 @@ int main(int argc, char *argv[])
 	}
 	f_decoded = fopen("decoded.out", "w");
 	int c = 0;
+	int last_byte_valid_bits = fgetc(f_encoded);
 
 	while(1)
 	{
 		int bit_offset = 7;
 		int ret = 0;
 		c = fgetc(f_encoded);
+
 		if(c == EOF) break;
+		else
+		{
+			if(fgetc(f_encoded) == EOF)
+			{
+				if(last_byte_valid_bits > 0)
+				{
+					c = c >> (8 - last_byte_valid_bits);
+					bit_offset = last_byte_valid_bits - 1;
+				}
+			}
+			else /* file pos not incremented if EOF */
+				fseek(f_encoded, ftell(f_encoded) - 1, SEEK_SET);
+		}
 		while(1)
 		{
 			ret = code_to_tree_value(head, (unsigned char) c, &bit_offset);

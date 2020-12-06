@@ -207,6 +207,7 @@ int main(int argc, char *argv[])
 	FILE *out = fopen("encoded.out", "w");
 	int byte_offset = 7;
 	unsigned char byte_to_write = 0;
+	fputc(byte_to_write, out); // we will update the first byte later with the nr of bits from 
 	while((c = fgetc(f)) != EOF)
 	{
 		memset(str_so_far, 0, 50);
@@ -231,7 +232,11 @@ int main(int argc, char *argv[])
 	}
 
 	if(byte_offset < 7) /* last byte not written */
+	{
 		fputc(byte_to_write, out);
+		rewind(out);
+		fputc((unsigned char) 7 - byte_offset, out); /* how many bits are valid in the last byte */
+	}
 	fclose(f);
 	fclose(out);
 	
@@ -248,6 +253,7 @@ int main(int argc, char *argv[])
 		int len = strlen(code_of_leaf);
 		//printf("byte %x with len %d and code %s\n", (unsigned char)every_byte, len, code_of_leaf);
 		fputc((char) len, f_tree); /* first byte, length in bits */
+		if(len == 0) continue;
 		for(int j = 0; j < len; j++)
 		{
 			if(code_of_leaf[j] == '1')
