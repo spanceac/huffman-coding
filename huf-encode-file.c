@@ -23,16 +23,6 @@ struct code
 	struct tree_node *subtree;
 };
 
-int histo(char c, struct code *my_code, int len)
-{
-	int enc = 0;
-	for(int i = 0; i < len; i++)
-	{
-		if(c == my_code[i].msg[0]) enc++;
-	}
-	return enc;
-}
-
 int was_char_evaluated(char c, struct code *my_code, int list_len)
 {
 	for(int i = 0; i < list_len; i++)
