@@ -5,3 +5,6 @@ huf-encode-file: huf-encode-file.c
 
 huf-decode-file: huf-decode-file.c
 	gcc -Wall -g -o huf-decode-file huf-decode-file.c
+
+clean:
+	rm huf-encode-file huf-decode-file
