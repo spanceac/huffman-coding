@@ -4,6 +4,9 @@
 
 #define MAX_CHARS 256
 #define bit_set(byte, bit) ((byte) |= (1 << (bit)))
+
+#define DEBUG
+
 char str_so_far[50];
 char code_of_leaf[50];
 int byte_found = 0;
@@ -133,7 +136,6 @@ int main(int argc, char *argv[])
 	{
 		if(was_char_evaluated(c, my_code, eval_count) == 0)
 		{
-			//evaluated[eval_count] = c;
 			my_code[eval_count].msg[0] = c;
 			my_code[eval_count].score++;
 			my_code[eval_count].str_len = 1;
@@ -147,11 +149,6 @@ int main(int argc, char *argv[])
 	}
 
 	sort_code(my_code, eval_count);
-
-	/*for(i = 0; i < eval_count; i++)
-	{
-		printf("byte %hhx with score %d\n", my_code[i].msg[0], my_code[i].score);
-	}*/
 
 	int iter = eval_count;
 
@@ -190,9 +187,10 @@ int main(int argc, char *argv[])
 		p_code++;
 		sort_code(p_code, iter - i - 1);
 	}
+#ifdef DEBUG
 	tree_traversal(head);
-	//printf("Full huffman code: ");
-	
+#endif
+
 	rewind(f);
 	FILE *out = fopen("encoded.out", "w");
 	int byte_offset = 7;
@@ -241,7 +239,9 @@ int main(int argc, char *argv[])
 		byte_offset = 7;
 		tree_search(head, (unsigned char) every_byte);
 		int len = strlen(code_of_leaf);
-		//printf("byte %x with len %d and code %s\n", (unsigned char)every_byte, len, code_of_leaf);
+#ifdef DEBUG
+		printf("byte %x with len %d and code %s\n", (unsigned char)every_byte, len, code_of_leaf);
+#endif
 		fputc((char) len, f_tree); /* first byte, length in bits */
 		if(len == 0) continue;
 		for(int j = 0; j < len; j++)

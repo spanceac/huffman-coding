@@ -6,6 +6,8 @@
 #define bit_set(byte, bit) ((byte) |= (1 << (bit)))
 #define bit_test(byte, bit) (((byte) >> (bit)) & 1)
 
+//#define DEBUG
+
 char str_so_far[50];
 char code_of_leaf[50];
 int byte_found = 0;
@@ -71,12 +73,12 @@ int code_to_tree_value(struct tree_node *head, unsigned char code, int *bit_offs
 
 void tree_leaf_add(struct tree_node *head, unsigned short code, int code_len, unsigned char leaf_val)
 {
-	//printf("code is %hx code_len %d \n", code, code_len);
-	//printf("adding code: ");
+#ifdef DEBUG
+	printf("code is %hx, code_len is %d \n", code, code_len);
+#endif
 
 	for(int i = 15; 15 - i  < code_len; i--)
 	{
-		//printf("code_lend e %d, i e %d, bit_test(code, i-1) e %d\n", code_len, i, bit_test(code, i-1));
 		if(head->left == NULL)
 		{
 			head->left = malloc(sizeof(struct tree_node));
@@ -141,12 +143,16 @@ int main(int argc, char *argv[])
 			code |= byte2;
 		}
 		tree_leaf_add(head, code, len, (unsigned char) each_byte);
-		//printf("adding byte %d, with len %d, and code %x\n", each_byte, len, code);
+#ifdef DEBUG
+		printf("adding byte %d, with len %d, and code %x\n", each_byte, len, code);
+#endif
 	}
 
 	fclose(f_tree);
 	memset(str_so_far, 0, 50);
+#ifdef DEBUG
 	tree_traversal(head);
+#endif
 
 	f_encoded = fopen(argv[2], "r");
 	if(f_encoded == NULL)
